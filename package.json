@@ -1,13 +1,27 @@
 {
   "name": "mimix-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "Pranay-Bhaskar",
   "description": "A lightweight, local-first API mock server with strict schema validation.",
+  "keywords": [
+    "mock",
+    "api",
+    "server",
+    "zod",
+    "testing",
+    "cli",
+    "hono",
+    "local"
+  ],
   "main": "src/extension.cjs",
   "type": "module",
   "bin": {
-    "mimix": "./bin/mimix.js"
+    "mimix": ".bin/mimix.js"
   },
+  "files": [
+    "src",
+    "bin"
+  ],
   "scripts": {
     "start": "node ./bin/mimix.js serve",
     "test": "vitest run"

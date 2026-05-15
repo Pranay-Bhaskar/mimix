@@ -1,7 +1,3 @@
-/**
- * src/validator.js
- * Translates JSON Schema configurations into executable Zod schemas.
- */
 import { z } from 'zod';
 
 export function buildZodSchema(jsonSchema) {

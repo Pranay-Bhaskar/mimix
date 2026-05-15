@@ -1,6 +1,5 @@
 name: Node.js CI
 
-# Trigger on pushes to main, and any Pull Request
 on:
   push:
     branches: [ "main" ]
@@ -10,7 +9,7 @@ on:
 jobs:
   test:
     name: Test on ${{ matrix.os }}
-    # This runs the job 3 separate times on 3 different operating systems!
+
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

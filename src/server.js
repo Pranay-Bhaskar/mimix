@@ -1,7 +1,3 @@
-/**
- * src/server.js
- * Initializes the Hono server, dynamically maps routes, and handles advanced diagnostics.
- */
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import fs from 'fs/promises';
