@@ -1,11 +1,11 @@
-# ⚡ NanoMock
+#  NanoMock
 
 **The local runtime for AI-generated APIs.** 
 A blazing-fast, zero-config mock server with strict Zod validation, a built-in performance dashboard, and Record & Replay capabilities. 
 
 Stop wrestling with massive OpenAPI specs. Tell your AI to generate a `mock.json`, and run `nanomock`. 
 
-## ✨ Features
+##  Features
 
 - **Strict Schema Validation:** Powered by Zod. If the frontend sends a bad payload, NanoMock throws a 400 with the exact missing fields.
 - **Record & Replay:** Proxy a real backend to steal its responses and cache them locally for offline development.
@@ -14,7 +14,7 @@ Stop wrestling with massive OpenAPI specs. Tell your AI to generate a `mock.json
 - **Hot-Reloading:** Change your `mock.json` and the server updates instantly.
 - **Collision Proof:** Automatically finds the next available port if your requested port is busy.
 
-## 🚀 Quick Start
+##  Quick Start
 
 **1. Install Globally**
 \`\`\`bash
@@ -34,7 +34,7 @@ nanomock serve -p 3000
 
 ---
 
-## 📖 Commands
+##  Commands
 
 ### `nanomock serve`
 Starts the mock server reading from `mock.json`.
@@ -50,7 +50,7 @@ Generates a highly-strict Zod schema based on raw JSON data. Perfect for feeding
 
 ---
 
-## 🛠️ The `mock.json` Structure
+##  The `mock.json` Structure
 NanoMock uses a simplified routing config. Instead of heavy JSON-Schema, just use stringified Zod definitions.
 
 \`\`\`json
@@ -76,5 +76,5 @@ NanoMock uses a simplified routing config. Instead of heavy JSON-Schema, just us
 }
 \`\`\`
 
-## 🤝 Contributing
+##  Contributing
 Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
