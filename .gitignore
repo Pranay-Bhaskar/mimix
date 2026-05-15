@@ -1,0 +1,20 @@
+# Node Dependencies
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Mimix Generated Files (Do not commit local test data)
+mock.json
+recorded_responses.json
+rapidmock-schema.json
+sample_api.json
+test.json
+api-response.json
+
+# VS Code Extension Artifacts
+*.vsix
+.vscode/
+
+# OS Junk Files
+.DS_Store
+Thumbs.db
