@@ -1,59 +1,107 @@
-#  NanoMock
+# Mimix
 
-**The local runtime for AI-generated APIs.** 
-A blazing-fast, zero-config mock server with strict Zod validation, a built-in performance dashboard, and Record & Replay capabilities. 
-
-Stop wrestling with massive OpenAPI specs. Tell your AI to generate a `mock.json`, and run `nanomock`. 
-
-##  Features
-
-- **Strict Schema Validation:** Powered by Zod. If the frontend sends a bad payload, NanoMock throws a 400 with the exact missing fields.
-- **Record & Replay:** Proxy a real backend to steal its responses and cache them locally for offline development.
-- **Smart Autoschema:** Feed it a raw JSON file, and it will automatically generate strict Zod schemas (detecting UUIDs, Dates, and Emails).
-- **Live Diagnostics Dashboard:** Built-in HTML dashboard to track latency, request volume, and error rates.
-- **Hot-Reloading:** Change your `mock.json` and the server updates instantly.
-- **Collision Proof:** Automatically finds the next available port if your requested port is busy.
-
-##  Quick Start
-
-**1. Install Globally**
-\`\`\`bash
-npm install -g nanomock
-\`\`\`
-
-**2. Initialize a Project**
-\`\`\`bash
-nanomock init
-\`\`\`
-*(This creates a `mock.json` file in your current directory).*
-
-**3. Start the Server**
-\`\`\`bash
-nanomock serve -p 3000
-\`\`\`
+A zero-friction, local-first API mock server with strict Zod validation.
 
 ---
 
-##  Commands
+Stop wrestling with massive OpenAPI specs just to mock a simple login route. Mimix is designed for modern frontend developers: feed it a basic JSON config, and get a running API with strict schema validation, record/replay proxying, and a live metrics dashboard.
 
-### `nanomock serve`
-Starts the mock server reading from `mock.json`.
-- **Options:** `-p, --port <number>` (Default: 3000)
-- **Dashboard:** Navigate to `http://localhost:3000/_mockcli/dashboard` to view live traffic metrics.
+**Perfect for pairing with LLMs**—tell your AI to write a `mock.json`, and let Mimix serve it.
 
-### `nanomock record --proxy <url>`
-Starts the server in Record & Replay mode.
-- **How it works:** The first time you hit an endpoint, NanoMock forwards the request to the proxy URL and saves the response locally to `recorded_responses.json`. The second time, it intercepts the request and serves the cached payload instantly.
-
-### `nanomock autoschema --from <file.json>`
-Generates a highly-strict Zod schema based on raw JSON data. Perfect for feeding into your frontend types.
 
 ---
 
-##  The `mock.json` Structure
-NanoMock uses a simplified routing config. Instead of heavy JSON-Schema, just use stringified Zod definitions.
+## Why does this exist?
 
-\`\`\`json
+Most basic JSON servers don't validate incoming payloads, leaving you to guess if your frontend is sending the right data. On the other end of the spectrum, enterprise mocking tools require writing hundreds of lines of YAML.
+
+**Mimix hits the sweet spot.** Paste a stringified Zod schema into your config, and your frontend will instantly know if it's sending the wrong data type.
+
+---
+
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **Strict Schema Validation** | Powered by Zod. If your frontend sends a string instead of a number, Mimix intercepts it and throws a strict `400 Bad Request` explaining exactly what field is missing. |
+| **Record & Replay** | Proxy a real backend API, capture its responses, and cache them locally. Ideal for coding offline or when staging servers go down. |
+| **Smart Autoschema** | Feed Mimix a raw JSON file, and it will intelligently generate strict Zod schemas for you, detecting UUIDs, dates, and emails. |
+| **Built-in Dashboard** | Navigate to `/mimix/dashboard` to see live traffic, latency charts, and a log of recent requests. |
+| **Hot-Reloading** | Tweak your `mock.json` and the server updates instantly without restarting. |
+| **Collision Proof** | Automatically finds the next available port if your requested port is busy. |
+
+
+---
+
+## Quick Start
+
+### 1. Install Globally
+
+```bash
+npm install -g mimix-cli
+```
+
+### 2. Initialize in Your Project
+
+```bash
+mimix init
+```
+
+This creates a blank `mock.json` file in your current directory.
+
+### 3. Start the Server
+
+```bash
+mimix serve -p 3000
+```
+
+**UI:** Open `http://localhost:3000/mimix/dashboard` in your browser to view live traffic.
+
+---
+
+## CLI Commands
+
+### `mimix serve`
+
+Starts the mock server using your `mock.json` file.
+
+**Options:**
+- `-p, --port <number>` — Port to run on (default: `3000`)
+
+---
+
+### `mimix record --proxy <url>`
+
+Starts the server in **Record & Replay** mode.
+
+**How it works:**
+1. First request → Mimix fetches from the real URL and saves to `recorded_responses.json`
+2. Same request again → Mimix serves instantly from local cache
+
+**Example:**
+```bash
+mimix record --proxy https://api.example.com --port 3001
+```
+
+---
+
+### `mimix autoschema --from <file.json>`
+
+Reads a raw JSON file and automatically generates a strict Zod schema block you can copy and paste directly into your `mock.json`.
+
+**Example:**
+```bash
+mimix autoschema --from api-response.json
+# Outputs: rapidmock-schema.json with Zod schema
+```
+
+---
+
+## The `mock.json` API
+
+No heavy schemas required. Just define your method, path, and stringified Zod definitions.
+
+```json
 {
   "routes": [
     {
@@ -74,7 +122,14 @@ NanoMock uses a simplified routing config. Instead of heavy JSON-Schema, just us
     }
   ]
 }
-\`\`\`
+```
 
-##  Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
+---
+
+## Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+Feel free to open an issue to discuss your ideas before submitting a pull request.
+
+---
