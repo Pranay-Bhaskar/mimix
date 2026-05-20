@@ -9,9 +9,15 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/your-github-username/mimix/test.yml?branch=main&style=flat-square)](https://github.com/your-github-username/mimix/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
+
+##  Links
+* **GitHub Repository:** [Pranay-Bhaskar/mimix](https://github.com/Pranay-Bhaskar/mimix)
+* **Report a Bug:** [Open an Issue](https://github.com/Pranay-Bhaskar/mimix/issues)
+
 Stop wrestling with massive OpenAPI specs just to mock a simple login route. <br> Mimix is designed for modern frontend developers: feed it a basic JSON config, and get a running API with strict schema validation, record/replay proxying, and a live metrics dashboard.
 
-![Mimix Terminal Demo](./docs/terminal-demo.png)
+![Mimix Dashboard](https://raw.githubusercontent.com/<Pranay-Bhaskar>/mimix/main/docs/dashboard.png)
+
 
 </div>
 
@@ -34,7 +40,7 @@ Most basic JSON servers don't validate incoming payloads, leaving you to guess i
 - **Hot-Reloading:** Tweak your `mock.json` and the server updates instantly without restarting.
 - **Collision Proof:** Automatically finds the next available port if your requested port is busy.
 
-![Mimix Dashboard](./docs/dashboard.png)
+![Mimix Terminal Demo](https://raw.githubusercontent.com/<Pranay-Bhaskar>/mimix/main/docs/mimix.gif)
 
 ---
 

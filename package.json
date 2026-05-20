@@ -1,8 +1,17 @@
 {
   "name": "mimix-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "Pranay-Bhaskar",
   "description": "A lightweight, local-first API mock server with strict schema validation.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pranay-Bhaskar/mimix.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Pranay-Bhaskar/mimix/issues"
+  },
+  "homepage": "https://github.com/Pranay-Bhaskar/mimix#readme",
   "keywords": [
     "mock",
     "api",

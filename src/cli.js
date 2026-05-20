@@ -5,16 +5,10 @@ import path from 'path';
 import { startServer } from './server.js';
 import { startRecorder } from './recorder.js';
 
-
-
-// Regex patterns for advanced type inference
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/; // basic ISO string
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/**
- * Recursively maps primitive JSON values to Zod string representations.
- */
 function inferType(val) {
   if (typeof val === 'string') {
     if (uuidRegex.test(val)) return 'z.string().uuid()';
@@ -105,11 +99,9 @@ export async function runCLI() {
         const buffer = await fs.readFile(filePath);
         let dataStr;
 
-        //  Handle Windows PowerShell UTF-16LE BOM
         if (buffer[0] === 0xFF && buffer[1] === 0xFE) {
           dataStr = buffer.toString('utf16le');
         } else {
-          // Handle standard UTF-8 and strip UTF-8 BOM if present
           dataStr = buffer.toString('utf-8');
           if (dataStr.charCodeAt(0) === 0xFEFF) {
             dataStr = dataStr.slice(1);

@@ -6,10 +6,8 @@ let statusBarItem;
 let outputChannel;
 
 function activate(context) {
-  // Initialize the output channel for logging
   outputChannel = vscode.window.createOutputChannel("Mimix Server");
   
-  // Setup the interactive Status Bar item
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   statusBarItem.command = 'mimix.toggleServer';
   statusBarItem.text = "$(play) Start Mimix";
