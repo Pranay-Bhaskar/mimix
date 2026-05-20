@@ -20,12 +20,20 @@
     "testing",
     "cli",
     "hono",
-    "local"
+    "local",
+    "json-server",
+    "fake-api",
+    "proxy",
+    "record",
+    "replay",
+    "schema",
+    "rest",
+    "frontend"
   ],
   "main": "src/extension.cjs",
   "type": "module",
   "bin": {
-    "mimix": ".bin/mimix.js"
+    "mimix": "./bin/mimix.js"
   },
   "files": [
     "src",

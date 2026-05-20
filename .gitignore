@@ -1,6 +1,5 @@
 node_modules/
 npm-debug.log*
-package-lock.json
 
 mock.json
 recorded_responses.json
