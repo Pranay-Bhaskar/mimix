@@ -16,7 +16,7 @@
 
 Stop wrestling with massive OpenAPI specs just to mock a simple login route. <br> Mimix is designed for modern frontend developers: feed it a basic JSON config, and get a running API with strict schema validation, record/replay proxying, and a live metrics dashboard.
 
-![Mimix Dashboard](https://raw.githubusercontent.com/<Pranay-Bhaskar>/mimix/main/docs/dashboard.png)
+![Mimix](https://raw.githubusercontent.com/<Pranay-Bhaskar>/mimix/main/docs/mimix.gif)
 
 
 </div>
@@ -40,7 +40,7 @@ Most basic JSON servers don't validate incoming payloads, leaving you to guess i
 - **Hot-Reloading:** Tweak your `mock.json` and the server updates instantly without restarting.
 - **Collision Proof:** Automatically finds the next available port if your requested port is busy.
 
-![Mimix Terminal Demo](https://raw.githubusercontent.com/<Pranay-Bhaskar>/mimix/main/docs/mimix.gif)
+![Mimix Dashboard](https://raw.githubusercontent.com/<Pranay-Bhaskar>/mimix/main/docs/dashboard)
 
 ---
 
