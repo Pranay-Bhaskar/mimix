@@ -6,7 +6,7 @@
 
 [![npm version](https://img.shields.io/npm/v/mimix-cli?color=blue&style=flat-square)](https://www.npmjs.com/package/mimix-cli)
 [![VS Code Extension](https://img.shields.io/visual-studio-marketplace/v/your-publisher-name.mimix?color=blueviolet&style=flat-square&label=VS%20Code)](https://marketplace.visualstudio.com/)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/your-github-username/mimix/test.yml?branch=main&style=flat-square)](https://github.com/your-github-username/mimix/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Pranay-Bhaskar/mimix/test.yml?branch=main&style=flat-square)](https://github.com/Pranay-Bhaskar/mimix/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 
@@ -158,4 +158,4 @@ Contributions, issues, and feature requests are always welcome!
 
 ## License
 
-Distributed under the MIT License. 
+Distributed under the MIT License.
