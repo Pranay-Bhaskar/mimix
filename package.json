@@ -33,7 +33,7 @@
   "main": "src/extension.cjs",
   "type": "module",
   "bin": {
-    "mimix": "./bin/mimix.js"
+    "mimix": "bin/mimix.js"
   },
   "files": [
     "src",

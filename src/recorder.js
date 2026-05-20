@@ -22,7 +22,6 @@ export async function startRecorder(targetUrl, requestedPort) {
     console.log(chalk.yellow(`\n  Port ${requestedPort} is in use. Mimix Recorder automatically bound to port ${port}.`));
   }
 
-  // Init cache file
   try {
     await fs.access(dbPath);
   } catch {
@@ -33,12 +32,10 @@ export async function startRecorder(targetUrl, requestedPort) {
     const method = c.req.method;
     const urlPath = new URL(c.req.url).pathname + new URL(c.req.url).search;
     
-    // IGNORE FAVICON & STATIC
     if (urlPath.includes('favicon.ico') || urlPath.includes('.ico')) {
       return c.text('', 204);
     }
 
-    // Parse body safely
     let bodyStr = "";
     const hasBody = ['POST', 'PUT', 'PATCH'].includes(method);
     if (hasBody) {
@@ -49,7 +46,7 @@ export async function startRecorder(targetUrl, requestedPort) {
           const parsed = JSON.parse(bodyText);
           bodyStr = JSON.stringify(parsed);
         } catch {
-          bodyStr = bodyText; // Non-JSON body
+          bodyStr = bodyText;
         }
       } catch (e) {
         bodyStr = "";
@@ -58,21 +55,18 @@ export async function startRecorder(targetUrl, requestedPort) {
 
     const signature = generateRequestSignature(method, c.req.url, bodyStr);
 
-    // Load cache
     let cacheData = {};
     try {
       const fileData = await fs.readFile(dbPath, 'utf-8');
       cacheData = JSON.parse(fileData);
     } catch {}
 
-    // REPLAY HIT
     if (cacheData[signature]) {
       console.log(chalk.green(`⏯  Replay: ${method} ${urlPath}`));
       const cached = cacheData[signature];
       return c.json(cached.body, cached.status || 200);
     }
 
-    // PROXY MISS
     console.log(chalk.yellow(` Proxy: ${method} ${urlPath}`));
     
     try {
@@ -95,7 +89,6 @@ export async function startRecorder(targetUrl, requestedPort) {
         responseBody = await proxyResponse.text();
       }
 
-      // CACHE HIT
       cacheData[signature] = {
         status: proxyResponse.status,
         body: responseBody

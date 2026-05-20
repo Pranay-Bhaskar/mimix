@@ -7,6 +7,16 @@ import chokidar from 'chokidar';
 import { z } from 'zod';
 import getPort from 'get-port';
 
+// --- Security Helpers ---
+const escapeHtml = (unsafe) => {
+  return (unsafe || '').toString()
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
 let requestLog = [];
 let routerApp = new Hono();
 
@@ -32,10 +42,13 @@ async function loadRoutes() {
       const endpoint = route.path;
       const handlers = [];
 
+      // 1. Zod Schema Compilation & Validation
       if (route.schema?.body) {
         const bodyShape = {};
         for (const [field, zodStr] of Object.entries(route.schema.body)) {
           try {
+            // Note: Acceptable risk for local dev tools. 
+            // Avoid `new Function` if moving to a cloud-hosted SaaS model.
             bodyShape[field] = new Function('z', `return ${zodStr}`)(z);
           } catch (e) {
             console.error(chalk.red(` Failed to compile schema for field '${field}': ${e.message}`));
@@ -46,10 +59,15 @@ async function loadRoutes() {
 
         handlers.push(async (c, next) => {
           let body = {};
-          try {
-            body = await c.req.json();
-          } catch (e) {
-            return c.json({ error: 'Invalid JSON body' }, 400);
+          
+          // Only attempt to parse JSON if the client actually sent JSON
+          const contentType = c.req.header('Content-Type') || '';
+          if (contentType.includes('application/json')) {
+            try {
+              body = await c.req.json();
+            } catch (e) {
+              return c.json({ error: 'Invalid JSON body' }, 400);
+            }
           }
 
           c.set('parsedBody', body);
@@ -65,6 +83,7 @@ async function loadRoutes() {
         });
       }
 
+      // 2. Response Handling & Delays
       handlers.push(async (c) => {
         if (route.delay) {
           const { min = 0, max = 0, jitter = false } = route.delay;
@@ -92,6 +111,7 @@ async function loadRoutes() {
         return c.json(body, status);
       });
 
+      // 3. Mount Route
       if (typeof newApp[method] === 'function') {
         newApp[method](endpoint, ...handlers);
         console.log(chalk.green(`✓ ${method.toUpperCase()} ${endpoint}`));
@@ -105,12 +125,13 @@ async function loadRoutes() {
 export async function startServer(requestedPort) {
   const app = new Hono();
 
-  //  Port Collision Handling
+  // Port Collision Handling
   const port = await getPort({ port: requestedPort });
   if (port !== requestedPort) {
     console.log(chalk.yellow(`\n Port ${requestedPort} is in use. Mimix automatically bound to port ${port} instead.`));
   }
 
+  // Global Logger Middleware
   app.use('*', async (c, next) => {
     if (c.req.path.startsWith('/mimix')) return next();
     
@@ -127,51 +148,54 @@ export async function startServer(requestedPort) {
       latency
     });
     
+    // Prevent memory leaks by capping the log array
     if (requestLog.length > 100) requestLog.pop();
   });
 
+  // Diagnostic Endpoints
   app.get('/mimix/inspector', (c) => c.json(requestLog));
   
-app.get('/mimix/dashboard', (c) => {
-  const totalReq = requestLog.length;
-  const avgLatency = totalReq
-    ? requestLog.reduce((acc, r) => acc + r.latency, 0) / totalReq
-    : 0;
-  const errRate = totalReq
-    ? (requestLog.filter(r => r.status >= 400).length / totalReq) * 100
-    : 0;
+  app.get('/mimix/dashboard', (c) => {
+    const totalReq = requestLog.length;
+    const avgLatency = totalReq
+      ? requestLog.reduce((acc, r) => acc + r.latency, 0) / totalReq
+      : 0;
+    const errRate = totalReq
+      ? (requestLog.filter(r => r.status >= 400).length / totalReq) * 100
+      : 0;
 
-  const labels = JSON.stringify(
-    requestLog.map((r) => new Date(r.timestamp).toLocaleTimeString()).reverse()
-  );
+    const labels = JSON.stringify(
+      requestLog.map((r) => new Date(r.timestamp).toLocaleTimeString()).reverse()
+    );
 
-  const latencyData = JSON.stringify(
-    requestLog.map((r) => r.latency).reverse()
-  );
+    const latencyData = JSON.stringify(
+      requestLog.map((r) => r.latency).reverse()
+    );
 
-  const rowsHtml = requestLog
-    .slice(0, 10)
-    .map((r) => {
-      const method = String(r.method || '').toLowerCase();
-      const knownMethods = ['get', 'post', 'put', 'patch', 'delete'];
-      const methodClass = knownMethods.includes(method)
-        ? 'pill-method-' + method
-        : 'pill-method-default';
-      const statusClass = r.status >= 400 ? 'status-bad' : 'status-ok';
+    const rowsHtml = requestLog
+      .slice(0, 10)
+      .map((r) => {
+        const method = String(r.method || '').toLowerCase();
+        const knownMethods = ['get', 'post', 'put', 'patch', 'delete'];
+        const methodClass = knownMethods.includes(method)
+          ? 'pill-method-' + method
+          : 'pill-method-default';
+        const statusClass = r.status >= 400 ? 'status-bad' : 'status-ok';
 
-      return `
-        <tr>
-          <td class="subtle num">${new Date(r.timestamp).toLocaleTimeString()}</td>
-          <td><span class="pill ${methodClass}">${r.method}</span></td>
-          <td class="mono">${r.path}</td>
-          <td><span class="status ${statusClass}">${r.status}</span></td>
-          <td class="subtle num">${r.latency} ms</td>
-        </tr>
-      `;
-    })
-    .join('');
+        // Escaped HTML to prevent XSS attacks in the dashboard
+        return `
+          <tr>
+            <td class="subtle num">${new Date(r.timestamp).toLocaleTimeString()}</td>
+            <td><span class="pill ${methodClass}">${escapeHtml(r.method)}</span></td>
+            <td class="mono">${escapeHtml(r.path)}</td>
+            <td><span class="status ${statusClass}">${escapeHtml(r.status)}</span></td>
+            <td class="subtle num">${r.latency} ms</td>
+          </tr>
+        `;
+      })
+      .join('');
 
-  const html = `
+    const html = `
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -702,9 +726,10 @@ app.get('/mimix/dashboard', (c) => {
   </body>
 </html>`;
 
-  return c.html(html);
-});
+    return c.html(html);
+  });
 
+  // Dynamic Router Interceptor
   app.use('*', async (c, next) => {
     const res = await routerApp.fetch(c.req.raw);
     if (res.status === 404) {
@@ -735,7 +760,8 @@ app.get('/mimix/dashboard', (c) => {
     }, 300);
   });
 
-const server = serve({ fetch: app.fetch, port }, (info) => {
+  // Start the underlying Node server
+  const server = serve({ fetch: app.fetch, port }, (info) => {
     console.log(chalk.cyan(`\n Server is listening on http://localhost:${info.port}`));
     console.log(chalk.gray(` Dashboard: http://localhost:${info.port}/mimix/dashboard\n`));
   });
